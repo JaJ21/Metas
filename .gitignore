@@ -1,0 +1,65 @@
+# =========================
+# Next.js / Node
+# =========================
+
+node_modules/
+.next/
+out/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vercel
+.vercel/
+
+
+# =========================
+# Java / Gradle
+# =========================
+
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Java compiled files
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# Java logs
+*.log
+
+
+# =========================
+# OS
+# =========================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store

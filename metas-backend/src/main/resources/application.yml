@@ -1,0 +1,73 @@
+# application.yml
+#
+# Só um arquivo de configuração, sem múltiplos profiles YAML (o padrão
+# proíbe application-dev.yml, application-prod.yml etc). Tudo que muda
+# entre ambientes vem de VARIÁVEL DE AMBIENTE, com um valor padrão aqui
+# usando a sintaxe ${VARIAVEL:valor_padrao}.
+
+spring:
+  application:
+    name: metas-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/metas}
+    username: ${DB_USER:metas}
+    password: ${DB_PASSWORD:metas}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # o schema é responsabilidade do Flyway, não do Hibernate
+    open-in-view: false     # nunca deixar a sessão do JPA aberta até a view — evita N+1 escondido
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  cache:
+    type: redis
+
+server:
+  port: ${SERVER_PORT:8080}
+
+# --------------------------------------------------------------------------
+# Segurança / JWT
+# --------------------------------------------------------------------------
+# Enquanto não existe um provedor de identidade externo (IdP), o próprio
+# backend emite e valida o token (ver shared/infra/config/security). O
+# segredo usado pra assinar o JWT PRECISA vir de variável de ambiente em
+# produção — o valor abaixo é só pra rodar local/dev.
+security:
+  jwt:
+    secret: ${JWT_SECRET:troque-este-segredo-por-um-valor-forte-e-aleatorio-em-producao-32bytes}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:480}
+    issuer: ${JWT_ISSUER:metas-backend}
+
+# --------------------------------------------------------------------------
+# Regras de negócio (equivalentes ao config.py do sistema em Python) —
+# ver módulo "meta". Guardadas aqui em vez de "hardcoded" no código.
+# --------------------------------------------------------------------------
+metas:
+  ano-realizado: ${METAS_ANO_REALIZADO:2026}
+  ano-orcamento: ${METAS_ANO_ORCAMENTO:2027}
+  mes-corte-real: ${METAS_MES_CORTE_REAL:7}   # jan..jul = REAL, ago..dez = FORECAST
+
+springdoc:
+  swagger-ui:
+    path: /docs
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
